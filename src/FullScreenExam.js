@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const FullScreenExam = () => {
-  const [examTimer, setExamTimer] = useState(3600); // Exam duration in seconds (1 hour)
+  const [examTimer, setExamTimer] = useState(900); // Exam duration in seconds (15 min)
   const [violationCount, setViolationCount] = useState(0);
   const [isExamRunning, setIsExamRunning] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -10,20 +10,33 @@ const FullScreenExam = () => {
   const violationIntervalId=null; // Store the violation timer interval ID
   const [violationAcknowledged, setViolationAcknowledged] = useState(false); // Flag to track if violation has been acknowledged
   const myRef = useRef(null);
+  //const examtimeref=examTimer;
   // Start the countdown timer for the exam
-  useEffect(() => {
-    if (isExamRunning && examTimer > 0) {
-      const intervalId = setInterval(() => {
-        setExamTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
+  const alertShown = useRef(false); // Use useRef to persist value across renders
 
-      return () => clearInterval(intervalId);
-    }
+    useEffect(() => {
+        if (isExamRunning && examTimer > 0) {
+            const intervalId = setInterval(() => {
+                setExamTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
 
-    if (examTimer === 0) {
-      terminateExam('Time is up! Exam has ended.');
-    }
-  }, [isExamRunning, examTimer]);
+            return () => clearInterval(intervalId);
+        }
+
+        if (examTimer === 0 && !alertShown.current) {
+            alertShown.current = true; // Set the ref to true
+
+            const termination = window.confirm('Time is up! Exam has ended.');
+
+            if (termination) {
+                setIsExamRunning(false);
+            }
+
+            console.log(termination);
+
+            // terminateExam('Time is up! Exam has ended.');
+        }
+    }, [isExamRunning, examTimer]);
 
   // Handle fullscreen and visibility changes
   useEffect(() => {
@@ -89,7 +102,7 @@ const FullScreenExam = () => {
   };
 
   const startExam = () => {
-    setExamTimer(3600); // Reset timer to 3600 seconds
+    setExamTimer(900); // Reset timer to 900 seconds
     setViolationCount(0); // Reset violation count when exam starts
     setViolationAcknowledged(false); // Reset violation acknowledgment
     setIsExamRunning(true); // Start the exam
