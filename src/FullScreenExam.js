@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const FullScreenExam = () => {
-  const [examTimer, setExamTimer] = useState(30); // Exam duration in seconds (1 hour)
+  const [examTimer, setExamTimer] = useState(3600); // Exam duration in seconds (1 hour)
   const [violationCount, setViolationCount] = useState(0);
   const [isExamRunning, setIsExamRunning] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -89,7 +89,7 @@ const FullScreenExam = () => {
   };
 
   const startExam = () => {
-    setExamTimer(30); // Reset timer to 3600 seconds
+    setExamTimer(3600); // Reset timer to 3600 seconds
     setViolationCount(0); // Reset violation count when exam starts
     setViolationAcknowledged(false); // Reset violation acknowledgment
     setIsExamRunning(true); // Start the exam
